@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class MainApp extends Application{
@@ -28,7 +29,7 @@ public class MainApp extends Application{
 		String fxmlFile = "/views/MainView.fxml";
 		log.debug("Loading FXML for main view from: {}", fxmlFile);
 		FXMLLoader loader = new FXMLLoader();
-		Parent rootNode = (Parent) loader.load(getClass().getResourceAsStream(fxmlFile));
+		BorderPane rootNode = (BorderPane) loader.load(getClass().getResourceAsStream(fxmlFile));
 
 		log.debug("Showing JFX scene");
 		Scene scene = new Scene(rootNode);
