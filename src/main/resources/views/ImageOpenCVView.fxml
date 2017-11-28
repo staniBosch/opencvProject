@@ -40,7 +40,7 @@
         <buttons>
           <Button mnemonicParsing="false" text="Anwenden" />
             <Label alignment="CENTER_RIGHT" prefHeight="17.0" text="Filter-Operationen:" textAlignment="RIGHT" />
-            <ChoiceBox fx:id="ChoiceBox" prefWidth="150.0" />
+            <ChoiceBox fx:id="CBoxFilter" prefWidth="150.0" />
             <Button mnemonicParsing="false" onAction="#loadImage" text="Öffnen" />
         </buttons>
       </ButtonBar>

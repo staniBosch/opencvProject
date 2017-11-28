@@ -34,7 +34,7 @@ public class OpenCVImageViewController {
 		@FXML
 		public void loadImage() {
 			File file = new ImageFileChooser().getImageFileChooser().showOpenDialog(stage);
-			this.ImageViewSrc.setImage(new Image(file.get));
+			this.ImageViewSrc.setImage(new Image(file.getAbsolutePath()));
 			
 		}
 		
