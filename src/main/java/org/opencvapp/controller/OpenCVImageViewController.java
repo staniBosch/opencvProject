@@ -19,7 +19,7 @@ public class OpenCVImageViewController {
 	@FXML
 	ImageView ImageViewDst;
 	@FXML
-	ChoiceBox CBoxFilter;
+	ChoiceBox<Object> CBoxFilter;
 	
 	private Stage stage;
 	
@@ -34,12 +34,13 @@ public class OpenCVImageViewController {
 		@FXML
 		public void loadImage() {
 			File file = new ImageFileChooser().getImageFileChooser().showOpenDialog(stage);
-			this.ImageViewSrc.setImage(new Image(file.getAbsolutePath()));
+			this.ImageViewSrc.setImage(new Image(file.toURI().toString()));
 			
 		}
 		
 		private void init() {
-			this.CBoxFilter.setItems(FXCollections.observableArrayList(
+			if(this.CBoxFilter!=null)
+				this.CBoxFilter.setItems(FXCollections.observableArrayList(
 				    "New Document", "Open ", 
 				    new Separator(), "Save", "Save as"));
 		}

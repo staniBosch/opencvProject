@@ -16,18 +16,18 @@
          <children>
             <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
               <content>
-                <AnchorPane fx:id="ImageViewSrc" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="ImageViewSrc" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </AnchorPane>
               </content>
             </ScrollPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="394.0" prefWidth="230.0">
               <content>
-                <AnchorPane fx:id="ImageViewDst" minHeight="0.0" minWidth="0.0" prefHeight="198.0" prefWidth="251.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="198.0" prefWidth="251.0">
                      <children>
-                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="ImageViewDst" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </AnchorPane>
               </content>
