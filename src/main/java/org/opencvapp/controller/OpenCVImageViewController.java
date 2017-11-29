@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencvapp.utils.ImageFileChooser;
@@ -88,7 +89,15 @@ public class OpenCVImageViewController implements Initializable {
 	}
 
 	public void loadCannyImage() {
-		//System.out.println(PathsUtils.pathImg.getPath());
+		this.dstMat = this.srcMat.clone();
+		
+		Imgproc.cvtColor(this.srcMat, this.dstMat, Imgproc.COLOR_RGB2GRAY);
+		Imgproc.blur(this.dstMat, this.dstMat, new Size(3, 3));
+		Imgproc.Canny(this.dstMat, this.dstMat, 100, 180, 3, false);
+		
+		Imgcodecs.imwrite(PathsUtils.ImgPathTempImg, this.dstMat);
+		
+		this.ImageViewDst.setImage(new Image(PathsUtils.ImgFileTempImg.getPath()));
 	}
 
 	public void loadOtherImage() {
