@@ -116,6 +116,8 @@ public class OpenCVSeqImageViewController implements Initializable {
 		} else {
 			mode = Modi.Origin;
 		}
+		System.out.println("change");
+		refresh();
 
 	}
 
@@ -233,7 +235,7 @@ public class OpenCVSeqImageViewController implements Initializable {
 				Imgproc.circle(temp.get(j), center, 1, new Scalar(0, 100, 100), 3, 8, 0);
 				// circle outline
 				int radius = (int) Math.round(c[2]);
-				Imgproc.circle(temp.get(j), center, radius, new Scalar(255, 0, 255), 3, 8, 0);
+				Imgproc.circle(temp.get(j), center, radius, new Scalar(0, 0, 255), 2, 7, 0);
 
 			}
 			j++;
