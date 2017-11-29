@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
@@ -19,6 +21,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -36,7 +39,7 @@ public class OpenCVSeqImageViewController implements Initializable {
 	}
 
 	@FXML
-	ImageView ImageViewSrc;	
+	ImageView ImageViewSrc;
 	@FXML
 	ChoiceBox<String> CBoxFilter;
 	@FXML
@@ -61,23 +64,36 @@ public class OpenCVSeqImageViewController implements Initializable {
 		this.stage = stage;
 	}
 
+	public void changeMode(Modi m) {
+		mode = m;
+		refresh();
+	}
+
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
-		log.debug("Initialize OpenCVSeqImageViewController");		
-		ObservableList<String> items = FXCollections.observableArrayList("Graubild", "Canny", "Praktikum");
+		log.debug("Initialize OpenCVSeqImageViewController");
+		ObservableList<String> items = FXCollections.observableArrayList("Graubild", "Canny", "HoughLinien",
+				"Praktikum");
 		this.CBoxFilter.setItems(items);
 		CBoxFilter.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// TODO Auto-generated method stub
+
 				String strValue = CBoxFilter.getItems().get(newValue.intValue());
 				if (strValue.equals("Graubild"))
 					loadGrayImage();
+
 				if (strValue.equals("Canny"))
 					loadCannyImage();
+				if (strValue.equals("HoughLinien"))
+					loadHoughLines();
 				if (strValue.equals("Praktikum"))
 					loadPrak();
+				changeMode(Modi.Modify);
+				refresh();
 			}
 		});
+
 	}
 
 	@FXML
@@ -135,13 +151,12 @@ public class OpenCVSeqImageViewController implements Initializable {
 	}
 
 	public void loadGrayImage() {
+		this.srcMat = new ArrayList<Mat>();
+		this.dstMat = new ArrayList<Mat>();
 		for (File f : this.files) {
 			this.srcMat.add(Imgcodecs.imread(f.getPath()));
 			this.dstMat.add(Imgcodecs.imread(f.getPath(), Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE));
 		}
-		this.mode = Modi.Modify;
-		refresh();
-
 	}
 
 	public void loadCannyImage() {
@@ -149,20 +164,84 @@ public class OpenCVSeqImageViewController implements Initializable {
 		loadGrayImage();
 
 		for (Mat src : this.srcMat) {
+
 			Imgproc.cvtColor(src, this.dstMat.get(i), Imgproc.COLOR_RGB2GRAY);
-			Imgproc.blur(this.dstMat.get(i), this.dstMat.get(i), new Size(3, 3));
+			Imgproc.medianBlur(this.dstMat.get(i), this.dstMat.get(i), 5);
 			Imgproc.Canny(this.dstMat.get(i), this.dstMat.get(i), 100, 180, 3, false);
 			i++;
 		}
-		refresh();
+
 	}
-	
-	public void loadPrak() {
-		/*TO-DO
+
+	public void loadHoughLines() {
+		/*
+		 * TO-DO
 		 * 
 		 */
-		
-		refresh();
+		loadGrayImage();
+		List<Mat> temp = new ArrayList<Mat>();
+		for (Mat src : this.srcMat) {
+			temp.add(src.clone());
+		}
+
+		int j = 0;
+
+		for (Mat image : this.dstMat) {
+			Mat lines = new Mat();
+			Imgproc.blur(image, image, new Size(3, 3));
+			Imgproc.Canny(image, image, 50, 200);
+			Imgproc.HoughLinesP(image, lines, 1, (Math.PI / 180), 50, 50, 10);
+			for (int i = 0; i < lines.rows(); i++) {
+				double[] val = lines.get(i, 0);
+				Imgproc.line(temp.get(j), new Point(val[0], val[1]), new Point(val[2], val[3]), new Scalar(0, 0, 255),
+						2);
+			}
+			if (j < temp.size())
+				j++;
+		}
+		j = 0;
+
+		this.dstMat.clear();
+		for (Mat m : temp) {
+			this.dstMat.add(m);
+		}
+
+	}
+
+	public void loadPrak() {
+		// loadCannyImage();
+
+		loadCannyImage();
+		List<Mat> temp = new ArrayList<Mat>();
+		for (Mat src : this.srcMat) {
+			temp.add(src.clone());
+		}
+		int j = 0;
+		for (Mat dst : this.dstMat) {
+
+			Mat circles = new Mat();
+
+			Imgproc.HoughCircles(dst, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 23, 300, 26, 3, 20);
+
+			for (int x = 0; x < circles.cols(); x++) {
+
+				System.out.println(circles.cols());
+				double[] c = circles.get(0, x);
+
+				Point center = new Point(Math.round(c[0]), Math.round(c[1]));
+				// circle center
+				Imgproc.circle(temp.get(j), center, 1, new Scalar(0, 100, 100), 3, 8, 0);
+				// circle outline
+				int radius = (int) Math.round(c[2]);
+				Imgproc.circle(temp.get(j), center, radius, new Scalar(255, 0, 255), 3, 8, 0);
+
+			}
+			j++;
+		}
+		this.dstMat.clear();
+		for (Mat m : temp) {
+			this.dstMat.add(m);
+		}
 	}
 
 }
