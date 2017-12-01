@@ -28,6 +28,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class OpenCVSeqImageViewController implements Initializable {
@@ -44,7 +46,7 @@ public class OpenCVSeqImageViewController implements Initializable {
 	ChoiceBox<String> CBoxFilter;
 	@FXML
 	Button btnAnzahl;
-
+	private PathsUtils putils = new PathsUtils();
 	private Stage stage;
 	private List<Mat> srcMat, dstMat;
 	List<File> files;
@@ -92,8 +94,12 @@ public class OpenCVSeqImageViewController implements Initializable {
 				changeMode(Modi.Modify);
 				refresh();
 			}
-		});
-
+		});	}
+	
+	@FXML
+	public void keyEvent(KeyEvent event) {	
+		if(event.getCode().equals(KeyCode.LEFT))socbtnLeft();					
+		if(event.getCode().equals(KeyCode.RIGHT)) socbtnRight();
 	}
 
 	@FXML
@@ -116,7 +122,6 @@ public class OpenCVSeqImageViewController implements Initializable {
 		} else {
 			mode = Modi.Origin;
 		}
-		System.out.println("change");
 		refresh();
 
 	}
@@ -137,6 +142,9 @@ public class OpenCVSeqImageViewController implements Initializable {
 		}
 	}
 
+	/**
+	 * refresh the ImageView and all buttons 
+	 */
 	public void refresh() {
 		if (this.files == null) {
 			this.btnAnzahl.setDisable(true);
@@ -147,8 +155,8 @@ public class OpenCVSeqImageViewController implements Initializable {
 		if (this.mode.equals(Modi.Origin)) {
 			this.ImageViewSrc.setImage(new Image(files.get(this.INTcurrentImage).toURI().toString()));
 		} else {
-			Imgcodecs.imwrite(PathsUtils.ImgPathTempImg, this.dstMat.get(INTcurrentImage));
-			this.ImageViewSrc.setImage(new Image(PathsUtils.ImgFileTempImg.getPath()));
+			Imgcodecs.imwrite(putils.ImgPathTempImg, this.dstMat.get(INTcurrentImage));
+			this.ImageViewSrc.setImage(new Image(putils.ImgFileTempImg.toURI().toString()));
 		}
 	}
 
@@ -227,7 +235,6 @@ public class OpenCVSeqImageViewController implements Initializable {
 
 			for (int x = 0; x < circles.cols(); x++) {
 
-				System.out.println(circles.cols());
 				double[] c = circles.get(0, x);
 
 				Point center = new Point(Math.round(c[0]), Math.round(c[1]));

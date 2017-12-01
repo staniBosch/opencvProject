@@ -1,23 +1,29 @@
 package org.opencvapp.utils;
 
-import java.io.File;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javafx.stage.FileChooser;
 
 public class ImageFileChooser {
 
-	private FileChooser imageFileChooser;
+	private static final Logger log = LoggerFactory.getLogger(ImageFileChooser.class);
 	
+	private FileChooser imageFileChooser;
+	private PathsUtils putils = new PathsUtils();
 	public ImageFileChooser() {
 		init();
 	}
 	
 	private void init(){
+		
 		imageFileChooser = new FileChooser();
 		imageFileChooser.setTitle("View Pictures");
-        imageFileChooser.setInitialDirectory(
-            new File(getClass().getResource("/images/").getFile())
+		imageFileChooser.setInitialDirectory(
+				putils.FileImg
+				//putils.FileImg
         ); 
+        
         imageFileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All Images", "*.*"),
                 new FileChooser.ExtensionFilter("JPG", "*.jpg"),

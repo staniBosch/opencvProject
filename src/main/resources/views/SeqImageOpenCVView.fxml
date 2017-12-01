@@ -7,9 +7,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.opencvapp.controller.OpenCVSeqImageViewController">
+<BorderPane onKeyPressed="#keyEvent" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.opencvapp.controller.OpenCVSeqImageViewController">
    <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <ScrollPane fitToHeight="true" fitToWidth="true" onKeyPressed="#keyEvent" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <content>
             <ImageView fx:id="ImageViewSrc" pickOnBounds="true" preserveRatio="true" />
          </content>

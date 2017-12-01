@@ -41,7 +41,8 @@ public class OpenCVImageViewController implements Initializable {
 	}
 
 	private Stage stage;
-
+	private PathsUtils putils = new PathsUtils();
+	
 	public OpenCVImageViewController() {
 
 	}
@@ -56,7 +57,6 @@ public class OpenCVImageViewController implements Initializable {
 		if (file != null) {
 			this.ImageViewSrc.setImage(new Image(file.toURI().toString()));
 			this.srcMat = Imgcodecs.imread(file.getPath());	
-			System.out.println(file.toURI().toString()+"  vs my shit ->  "+(PathsUtils.ImgPathTempImg));
 		} else {
 			log.debug("No file was choosen");
 		}
@@ -83,9 +83,9 @@ public class OpenCVImageViewController implements Initializable {
 		this.dstMat = this.srcMat.clone();
 		
 		Imgproc.cvtColor(this.srcMat, this.dstMat, Imgproc.COLOR_RGB2GRAY);
-		Imgcodecs.imwrite(PathsUtils.ImgPathTempImg, this.dstMat);
+		Imgcodecs.imwrite(putils.ImgPathTempImg, this.dstMat);
 		
-		this.ImageViewDst.setImage(new Image(PathsUtils.ImgFileTempImg.getPath()));
+		this.ImageViewDst.setImage(new Image(putils.ImgFileTempImg.getPath()));
 	}
 
 	public void loadCannyImage() {
@@ -95,9 +95,9 @@ public class OpenCVImageViewController implements Initializable {
 		Imgproc.blur(this.dstMat, this.dstMat, new Size(3, 3));
 		Imgproc.Canny(this.dstMat, this.dstMat, 100, 180, 3, false);
 		
-		Imgcodecs.imwrite(PathsUtils.ImgPathTempImg, this.dstMat);
+		Imgcodecs.imwrite(putils.ImgPathTempImg, this.dstMat);
 		
-		this.ImageViewDst.setImage(new Image(PathsUtils.ImgFileTempImg.getPath()));
+		this.ImageViewDst.setImage(new Image(putils.ImgFileTempImg.getPath()));
 	}
 
 	public void loadOtherImage() {
