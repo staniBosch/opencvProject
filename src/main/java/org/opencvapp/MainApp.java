@@ -2,7 +2,6 @@ package org.opencvapp;
 
 import org.apache.log4j.BasicConfigurator;
 import org.opencvapp.controller.MainController;
-import org.opencvapp.utils.PathsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

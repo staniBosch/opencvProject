@@ -17,17 +17,15 @@ public class PathsUtils {
 
 	public PathsUtils() {
 		boolean isJar;
-		 String className = this.getClass().getName().replace('.', '/');
-		   String classJar =
-		     this.getClass().getResource("/" + className + ".class").toString();
-		   if (classJar.startsWith("jar:")) 
-		     isJar = true;
-		   else
-			   isJar = false; 
-		 
+		String className = this.getClass().getName().replace('.', '/');
+		String classJar = this.getClass().getResource("/" + className + ".class").toString();
+		if (classJar.startsWith("jar:"))
+			isJar = true;
+		else
+			isJar = false;
+
 		/************************************************/
-		   
-		   
+
 		if (!isJar) {
 			log.debug("You're running inside Eclipse");
 			FileImg = new File(getClass().getResource("/images").getPath());
@@ -41,10 +39,10 @@ public class PathsUtils {
 			this.ImgFileTempImg = new File(jarPath + "/images/tmp/tmp.bmp");
 			this.PathImg = new File(jarPath + "/images").getPath();
 			this.ImgPathTempImg = new File(jarPath + "/images/tmp/tmp.bmp").getPath();
-			if (!new File(jarPath + "/images/tmp").exists()) {				
-				new File(jarPath + "/images/tmp").mkdirs();				
+			if (!new File(jarPath + "/images/tmp").exists()) {
+				new File(jarPath + "/images/tmp").mkdirs();
 				try {
-					log.debug("file was created:"+ this.ImgFileTempImg.createNewFile());					
+					log.debug("file was created:" + this.ImgFileTempImg.createNewFile());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -57,7 +55,7 @@ public class PathsUtils {
 	/**
 	 * The File for the Imagefolder.
 	 */
-	public File FileImg ;
+	public File FileImg;
 	/**
 	 * The Path for the Imagefolder.
 	 */

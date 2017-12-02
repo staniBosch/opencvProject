@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class MainController {
@@ -18,25 +17,24 @@ public class MainController {
 
 	@FXML
 	BorderPane mainPane;
-	private Stage stage;
-
+	
 	private BorderPane ImageOpenCVView;
 	private BorderPane ImageSeqOpenCVView;
-	private BorderPane VideoOpenCVView;
+
 
 	public MainController() {
 		super();
 	}
 
 	public MainController(Stage stage) throws IOException {
-		this.stage = stage;
+
 		String fxmlFile = "/views/MainView.fxml";
 		log.debug("Loading FXML for main view from: {}", fxmlFile);
 		FXMLLoader loader = new FXMLLoader();
 		BorderPane parent = (BorderPane) loader.load(getClass().getResourceAsStream(fxmlFile));
 
 		log.debug("Showing JFX scene");
-		Scene scene = new Scene(parent, 600, 400);
+		Scene scene = new Scene(parent, 1280, 720);
 		scene.getStylesheets().add("/styles/styles.css");
 
 		stage.setTitle("OpenCV Application");
@@ -74,6 +72,7 @@ public class MainController {
 				String fxmlFile = "/views/SeqImageOpenCVView.fxml";
 				log.debug("Loading FXML for main view from: {}", fxmlFile);
 				FXMLLoader loader = new FXMLLoader();
+				log.error(getClass().getResourceAsStream(fxmlFile).toString());
 				this.ImageSeqOpenCVView = (BorderPane) loader.load(getClass().getResourceAsStream(fxmlFile));
 
 			} catch (IOException e) {

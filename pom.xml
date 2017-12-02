@@ -16,7 +16,6 @@
 	<build>
 		<finalName>OpenCVGui</finalName>
 
-		
 		<plugins>
 			<plugin>
 				<groupId>com.zenjava</groupId>
@@ -53,8 +52,30 @@
 					</execution>
 				</executions>
 			</plugin>
-
-
+			
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-resources-1</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}/src/main/extresources</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					</executions>					
+			</plugin>
+			
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4.0</version>
@@ -67,16 +88,17 @@
 			</plugin>
 		</plugins>
 
-	<resources>
+
+		<resources>
 			<resource>
 				<directory>src/main/extresources/</directory>
 				<targetPath>../jfx/app/</targetPath>
 			</resource>
 			<resource>
-				<directory>src/main/resources/</directory>				
+				<directory>src/main/resources/</directory>
 			</resource>
 		</resources>
-		
+
 	</build>
 	<dependencies>
 		<dependency>
