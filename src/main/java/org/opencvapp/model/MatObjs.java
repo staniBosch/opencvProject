@@ -9,7 +9,6 @@ import org.opencv.core.Mat;
 public class MatObjs {
 
 	private List<Mat> srcMat, grayMat, blurMat, cannyMat, lineMat, circleMat;
-	
 
 	private List<File> files;
 	public int INTcurrentImage;
@@ -20,7 +19,7 @@ public class MatObjs {
 		blurMat = new ArrayList<Mat>();
 		cannyMat = new ArrayList<Mat>();
 		lineMat = new ArrayList<Mat>();
-		circleMat = new ArrayList<Mat>();		
+		circleMat = new ArrayList<Mat>();
 		files = new ArrayList<File>();
 	}
 

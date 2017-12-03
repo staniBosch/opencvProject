@@ -67,7 +67,7 @@ public class OpenCVSeqImageViewController implements Initializable {
 	private Stage stage;
 
 	private MatObjs matObj;
-	
+
 	public boolean isPlay;
 
 	public static enum Modi {
@@ -83,10 +83,6 @@ public class OpenCVSeqImageViewController implements Initializable {
 
 	public OpenCVSeqImageViewController() {
 
-	}
-
-	public OpenCVSeqImageViewController(Stage stage) {
-		this.stage = stage;
 	}
 
 	public void changeMode(Modi m) {
@@ -106,7 +102,7 @@ public class OpenCVSeqImageViewController implements Initializable {
 
 				String strValue = CBoxFilter.getItems().get(newValue.intValue());
 				if (strValue.equals("Graubild")) {
-					loadGrayImage();					
+					loadGrayImage();
 					changeMode(Modi.Gray);
 				}
 				if (strValue.equals("Canny")) {
@@ -134,11 +130,10 @@ public class OpenCVSeqImageViewController implements Initializable {
 
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// TODO Auto-generated method stub
-				
+
 				if (!matObj.getCannyMat().isEmpty() && !cannyAllOther.isSelected()) {
-					loadCannyImage((int) newValue.doubleValue(), (int) slider2.getValue());					
-				}
-				else {
+					loadCannyImage((int) newValue.doubleValue(), (int) slider2.getValue());
+				} else {
 					loadHoughLines((int) sliderHL1.getValue(), (int) sliderHL2.getValue(), (int) sliderHL3.getValue());
 					loadPrak(0, 0);
 				}
@@ -150,9 +145,8 @@ public class OpenCVSeqImageViewController implements Initializable {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// TODO Auto-generated method stub
 				if (!matObj.getCannyMat().isEmpty() && !cannyAllOther.isSelected()) {
-					loadCannyImage((int) slider1.getValue(), (int) newValue.doubleValue());					
-				}
-				else {
+					loadCannyImage((int) slider1.getValue(), (int) newValue.doubleValue());
+				} else {
 					loadHoughLines((int) sliderHL1.getValue(), (int) sliderHL2.getValue(), (int) sliderHL3.getValue());
 					loadPrak(0, 0);
 				}
@@ -248,6 +242,21 @@ public class OpenCVSeqImageViewController implements Initializable {
 		}
 	}
 
+	/**
+	 * @return the stage
+	 */
+	public Stage getStage() {
+		return stage;
+	}
+
+	/**
+	 * @param stage
+	 *            the stage to set
+	 */
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
+
 	@FXML
 	public void socbtnPlay() {
 		this.isPlay = true;
@@ -271,6 +280,7 @@ public class OpenCVSeqImageViewController implements Initializable {
 		th.setDaemon(true);
 		th.start();
 	}
+
 	@FXML
 	public void socbtnStop() {
 		this.isPlay = false;
@@ -379,8 +389,7 @@ public class OpenCVSeqImageViewController implements Initializable {
 				}
 				j++;
 			}
-		}
-		else {
+		} else {
 			for (Mat image : matObj.getCannyMat()) {
 				Mat lines = new Mat();
 

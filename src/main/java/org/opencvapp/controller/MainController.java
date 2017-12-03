@@ -10,44 +10,19 @@ import org.slf4j.LoggerFactory;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class MainController implements Initializable{
+public class MainController implements Initializable {
 
 	private static final Logger log = LoggerFactory.getLogger(MainController.class);
 
 	@FXML
 	BorderPane mainPane;
-	
+
 	private BorderPane ImageOpenCVView;
 	private BorderPane ImageSeqOpenCVView;
-
-
-	public MainController() {
-		super();
-	}
-
-	public MainController(Stage stage) throws IOException {
-
-		String fxmlFile = "/views/MainView.fxml";
-		log.debug("Loading FXML for main view from: {}", fxmlFile);
-		FXMLLoader loader = new FXMLLoader();
-		BorderPane parent = (BorderPane) loader.load(getClass().getResourceAsStream(fxmlFile));
-
-		log.debug("Showing JFX scene");
-		Scene scene = new Scene(parent, 1280, 720);
-		scene.getStylesheets().add("/styles/styles.css");
-
-		stage.setTitle("OpenCV Application");
-		stage.setScene(scene);
-		stage.show();		
-	}
-
-	public void init() throws IOException {
-
-	}
+	private Stage stage;
 
 	@FXML
 	public void openImageView() {
@@ -68,22 +43,33 @@ public class MainController implements Initializable{
 	}
 
 	@FXML
-	public void openSeqImageView() {
+	public void openSeqImageView() throws IOException {
 		if (this.ImageSeqOpenCVView == null) {
-			try {
-				log.info("Open ImageView");
-				String fxmlFile = "/views/SeqImageOpenCVView.fxml";
-				log.debug("Loading FXML for main view from: {}", fxmlFile);
-				FXMLLoader loader = new FXMLLoader();
-				log.error(getClass().getResourceAsStream(fxmlFile).toString());
-				this.ImageSeqOpenCVView = (BorderPane) loader.load(getClass().getResourceAsStream(fxmlFile));
+			log.info("Open ImageView");
+			String fxmlFile = "/views/SeqImageOpenCVView.fxml";
+			log.debug("Loading FXML for main view from: {}", fxmlFile);
+			FXMLLoader loader = new FXMLLoader();
+			this.ImageSeqOpenCVView = (BorderPane) loader.load(getClass().getResourceAsStream(fxmlFile));
 
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			OpenCVSeqImageViewController opc = loader.<OpenCVSeqImageViewController>getController();
+			opc.setStage(stage);
 		}
 		this.mainPane.setCenter(this.ImageSeqOpenCVView);
+	}
+
+	/**
+	 * @return the stage
+	 */
+	public Stage getStage() {
+		return stage;
+	}
+
+	/**
+	 * @param stage
+	 *            the stage to set
+	 */
+	public void setStage(Stage stage) {
+		this.stage = stage;
 	}
 
 	@FXML
@@ -93,7 +79,12 @@ public class MainController implements Initializable{
 
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
-		openSeqImageView();
+		try {
+			openSeqImageView();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

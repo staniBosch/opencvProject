@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
@@ -20,10 +23,24 @@ public class MainApp extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage stage) throws Exception {
 		// TODO Auto-generated method stub
 		log.info("App is starting");
-		new MainController(primaryStage);
+		String fxmlFile = "/views/MainView.fxml";
+		log.debug("Loading FXML for main view from: {}", fxmlFile);
+		FXMLLoader loader = new FXMLLoader();
+		BorderPane parent = (BorderPane) loader.load(getClass().getResourceAsStream(fxmlFile));
+
+		MainController opc = loader.<MainController>getController();
+		opc.setStage(stage);
+
+		log.debug("Showing JFX scene");
+		Scene scene = new Scene(parent, 1280, 720);
+		scene.getStylesheets().add("/styles/styles.css");
+
+		stage.setTitle("OpenCV Application");
+		stage.setScene(scene);
+		stage.show();
 	}
 
 }
