@@ -17,15 +17,21 @@ import org.opencvapp.utils.PathsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -47,12 +53,22 @@ public class OpenCVSeqImageViewController implements Initializable {
 	@FXML
 	Button btnAnzahl;
 	@FXML
-	private Slider slider1, slider2;
+	private Slider slider1, slider2, sliderHL1, sliderHL2, sliderHL3, sliderHC1, sliderHC2, sliderHC3, sliderHC4;
+	@FXML
+	private Label labelSHL1, labelSHL2, labelSHL3;
+	@FXML
+	private CheckBox chBHoughP, cannyAllOther;
+	@FXML
+	private Accordion accord;
+	@FXML
+	private TitledPane cannyPane, houghLPane, houghCPane;
 
 	private PathsUtils putils = new PathsUtils();
 	private Stage stage;
 
 	private MatObjs matObj;
+	
+	public boolean isPlay;
 
 	public static enum Modi {
 		Origin, Gray, Canny, Line, Circle;
@@ -80,7 +96,7 @@ public class OpenCVSeqImageViewController implements Initializable {
 
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
-		log.debug("Initialize OpenCVSeqImageViewController");		
+		log.debug("Initialize OpenCVSeqImageViewController");
 		ObservableList<String> items = FXCollections.observableArrayList("Graubild", "Canny", "HoughLinien",
 				"HoughCircle");
 		this.CBoxFilter.setItems(items);
@@ -90,20 +106,23 @@ public class OpenCVSeqImageViewController implements Initializable {
 
 				String strValue = CBoxFilter.getItems().get(newValue.intValue());
 				if (strValue.equals("Graubild")) {
-					loadGrayImage();
+					loadGrayImage();					
 					changeMode(Modi.Gray);
 				}
 				if (strValue.equals("Canny")) {
-					if(matObj.getCannyMat().isEmpty())
+					if (matObj.getCannyMat().isEmpty())
 						loadCannyImage((int) slider1.getValue(), (int) slider2.getValue());
+					accord.setExpandedPane(cannyPane);
 					changeMode(Modi.Canny);
 				}
 				if (strValue.equals("HoughLinien")) {
-					loadHoughLines(10, 20);
+					loadHoughLines(100, 0, 0);
+					accord.setExpandedPane(houghLPane);
 					changeMode(Modi.Line);
 				}
 				if (strValue.equals("HoughCircle")) {
 					loadPrak(10, 20);
+					accord.setExpandedPane(houghCPane);
 					changeMode(Modi.Circle);
 				}
 
@@ -115,24 +134,14 @@ public class OpenCVSeqImageViewController implements Initializable {
 
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// TODO Auto-generated method stub
-				String strValue = CBoxFilter.getSelectionModel().getSelectedItem();
-				if (strValue.equals("Graubild")) {
-					loadGrayImage();
-					changeMode(Modi.Gray);
+				
+				if (!matObj.getCannyMat().isEmpty() && !cannyAllOther.isSelected()) {
+					loadCannyImage((int) newValue.doubleValue(), (int) slider2.getValue());					
 				}
-				if (strValue.equals("Canny")) {
-					loadCannyImage((int) newValue.doubleValue(), (int) slider2.getValue());
-					changeMode(Modi.Canny);
+				else {
+					loadHoughLines((int) sliderHL1.getValue(), (int) sliderHL2.getValue(), (int) sliderHL3.getValue());
+					loadPrak(0, 0);
 				}
-				if (strValue.equals("HoughLinien")) {
-					loadHoughLines((int) newValue.doubleValue(), (int) slider2.getValue());
-					changeMode(Modi.Line);
-				}
-				if (strValue.equals("HoughCircle")) {
-					loadPrak((int) newValue.doubleValue(), (int) slider2.getValue());
-					changeMode(Modi.Circle);
-				}
-
 				refresh();
 			}
 		});
@@ -140,22 +149,51 @@ public class OpenCVSeqImageViewController implements Initializable {
 
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// TODO Auto-generated method stub
+				if (!matObj.getCannyMat().isEmpty() && !cannyAllOther.isSelected()) {
+					loadCannyImage((int) slider1.getValue(), (int) newValue.doubleValue());					
+				}
+				else {
+					loadHoughLines((int) sliderHL1.getValue(), (int) sliderHL2.getValue(), (int) sliderHL3.getValue());
+					loadPrak(0, 0);
+				}
+				refresh();
+			}
+		});
+		this.sliderHL1.valueProperty().addListener(new ChangeListener<Number>() {
+
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				// TODO Auto-generated method stub
 				String strValue = CBoxFilter.getSelectionModel().getSelectedItem();
-				if (strValue.equals("Graubild")) {
-					loadGrayImage();
-					changeMode(Modi.Gray);
-				}
-				if (strValue.equals("Canny")) {
-					loadCannyImage((int) slider1.getValue(), (int) newValue.doubleValue());
-					changeMode(Modi.Canny);
-				}
 				if (strValue.equals("HoughLinien")) {
-					loadHoughLines((int) slider1.getValue(), (int) newValue.doubleValue());
+					loadHoughLines((int) newValue.doubleValue(), (int) sliderHL2.getValue(),
+							(int) sliderHL3.getValue());
 					changeMode(Modi.Line);
 				}
-				if (strValue.equals("HoughCircle")) {
-					loadPrak((int) slider1.getValue(), (int) newValue.doubleValue());
-					changeMode(Modi.Circle);
+				refresh();
+			}
+		});
+		this.sliderHL2.valueProperty().addListener(new ChangeListener<Number>() {
+
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				// TODO Auto-generated method stub
+				String strValue = CBoxFilter.getSelectionModel().getSelectedItem();
+				if (strValue.equals("HoughLinien")) {
+					loadHoughLines((int) sliderHL1.getValue(), (int) newValue.doubleValue(),
+							(int) sliderHL3.getValue());
+					changeMode(Modi.Line);
+				}
+				refresh();
+			}
+		});
+		this.sliderHL3.valueProperty().addListener(new ChangeListener<Number>() {
+
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				// TODO Auto-generated method stub
+				String strValue = CBoxFilter.getSelectionModel().getSelectedItem();
+				if (strValue.equals("HoughLinien")) {
+					loadHoughLines((int) sliderHL1.getValue(), (int) sliderHL2.getValue(),
+							(int) newValue.doubleValue());
+					changeMode(Modi.Line);
 				}
 				refresh();
 			}
@@ -195,7 +233,7 @@ public class OpenCVSeqImageViewController implements Initializable {
 
 	@FXML
 	public void socbtnLoad() {
-		
+
 		List<File> files = new ImageFileChooser().getImageFileChooser().showOpenMultipleDialog(stage);
 		if (files != null) {
 			matObj = new MatObjs();
@@ -211,8 +249,31 @@ public class OpenCVSeqImageViewController implements Initializable {
 	}
 
 	@FXML
-	public void socbtnApply() {
-
+	public void socbtnPlay() {
+		this.isPlay = true;
+		Task<Void> task = new Task<Void>() {
+			@Override
+			public Void call() throws Exception {
+				while (isPlay) {
+					Platform.runLater(new Runnable() {
+						public void run() {
+							matObj.INTcurrentImage = ((matObj.INTcurrentImage >= matObj.getFiles().size() - 1) ? 0
+									: matObj.INTcurrentImage + 1);
+							refresh();
+						}
+					});
+					Thread.sleep(100);
+				}
+				return null;
+			}
+		};
+		Thread th = new Thread(task);
+		th.setDaemon(true);
+		th.start();
+	}
+	@FXML
+	public void socbtnStop() {
+		this.isPlay = false;
 	}
 
 	/**
@@ -297,25 +358,40 @@ public class OpenCVSeqImageViewController implements Initializable {
 		}
 	}
 
-	public void loadHoughLines(int th1, int th2) {
+	public void loadHoughLines(int th1, int srn, int stn) {
 		matObj.setLineMat(new ArrayList<Mat>());
 		if (matObj.getCannyMat().isEmpty())
-			loadCannyImage(180, 250);
+			loadCannyImage((int) slider1.getValue(), (int) slider2.getValue());
 		for (Mat src : matObj.getSrcMat()) {
 			matObj.getLineMat().add(src.clone());
 		}
 		int j = 0;
 
-		for (Mat image : matObj.getCannyMat()) {
-			Mat lines = new Mat();
+		if (chBHoughP.isSelected()) {
+			for (Mat image : matObj.getCannyMat()) {
+				Mat lines = new Mat();
 
-			Imgproc.HoughLinesP(image, lines, 1, (Math.PI / 180), th1, th1, th2);
-			for (int i = 0; i < lines.rows(); i++) {
-				double[] val = lines.get(i, 0);
-				Imgproc.line(matObj.getLineMat().get(j), new Point(val[0], val[1]), new Point(val[2], val[3]),
-						new Scalar(0, 0, 255), 2);
+				Imgproc.HoughLinesP(image, lines, 1, (Math.PI / 180), th1, srn, stn);
+				for (int i = 0; i < lines.rows(); i++) {
+					double[] val = lines.get(i, 0);
+					Imgproc.line(matObj.getLineMat().get(j), new Point(val[0], val[1]), new Point(val[2], val[3]),
+							new Scalar(0, 0, 255), 2);
+				}
+				j++;
 			}
-			j++;
+		}
+		else {
+			for (Mat image : matObj.getCannyMat()) {
+				Mat lines = new Mat();
+
+				Imgproc.HoughLinesP(image, lines, 1, (Math.PI / 180), th1, srn, stn);
+				for (int i = 0; i < lines.rows(); i++) {
+					double[] val = lines.get(i, 0);
+					Imgproc.line(matObj.getLineMat().get(j), new Point(val[0], val[1]), new Point(val[2], val[3]),
+							new Scalar(0, 0, 255), 2);
+				}
+				j++;
+			}
 		}
 	}
 
@@ -323,7 +399,7 @@ public class OpenCVSeqImageViewController implements Initializable {
 		// loadCannyImage();
 		matObj.setCircleMat(new ArrayList<Mat>());
 		if (matObj.getCannyMat().isEmpty())
-			loadCannyImage(180, 250);
+			loadCannyImage((int) slider1.getValue(), (int) slider2.getValue());
 		for (Mat src : matObj.getSrcMat()) {
 			matObj.getCircleMat().add(src.clone());
 		}

@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.opencvapp.controller.OpenCVSeqImageViewController">
@@ -18,7 +23,7 @@
          <center>
             <ScrollPane fitToHeight="true" fitToWidth="true" onKeyPressed="#keyEvent" BorderPane.alignment="CENTER">
                <content>
-                  <ImageView fx:id="ImageViewSrc" fitHeight="640.0" fitWidth="1100.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="ImageViewSrc" fitHeight="640.0" fitWidth="1000.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" />
                </content>
             </ScrollPane>
          </center>
@@ -31,7 +36,8 @@
          <bottom>
             <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
               <buttons>
-                <Button mnemonicParsing="false" onAction="#socbtnApply" text="Anwenden" />
+                <Button mnemonicParsing="false" onAction="#socbtnPlay" text="Apspielen" />
+                  <Button layoutX="692.0" layoutY="18.0" mnemonicParsing="false" onAction="#socbtnStop" text="Stop" />
                   <ChoiceBox fx:id="CBoxFilter" prefWidth="150.0" />
                   <Button mnemonicParsing="false" onAction="#socbtnLoad" text="Öffnen" />
               </buttons>
@@ -43,30 +49,93 @@
       </BorderPane>
    </center>
    <left>
-      <Accordion BorderPane.alignment="CENTER">
+      <Accordion fx:id="accord" maxWidth="300.0" BorderPane.alignment="CENTER">
         <panes>
-          <TitledPane animated="false" text="Canny">
+          <TitledPane fx:id="cannyPane" animated="false" text="Canny">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane>
                      <children>
-                        <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Slider fx:id="slider2" max="255.0" showTickLabels="true" />
-                              <Slider fx:id="slider1" max="650.0" showTickLabels="true" />
+                              <Label text="lowThreshold" />
+                              <Slider fx:id="slider2" max="255.0" showTickLabels="true" showTickMarks="true" />
+                              <Separator prefWidth="200.0">
+                                 <padding>
+                                    <Insets top="10.0" />
+                                 </padding>
+                              </Separator>
+                              <Label text="highThreshold" />
+                              <Slider fx:id="slider1" max="650.0" showTickLabels="true" showTickMarks="true" />
+                              <Separator prefWidth="200.0" />
+                              <CheckBox fx:id="cannyAllOther" mnemonicParsing="false" text="Calculate All Other" />
                            </children>
                         </VBox>
                      </children>
                   </AnchorPane>
             </content>
           </TitledPane>
-          <TitledPane animated="false" text="HoughLines">
+          <TitledPane fx:id="houghLPane" animated="false" text="HoughLines">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane>
+                     <children>
+                        <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Label fx:id="labelSHL1" minHeight="35.0" text="threshold: The minimum number of intersections to “detect” a line" textOverrun="CLIP" wrapText="true" />
+                              <Slider fx:id="sliderHL1" max="200.0" showTickLabels="true" showTickMarks="true" />
+                              <Separator prefWidth="200.0" />
+                              <Label fx:id="labelSHL2" text="the multi-scale Hough transform, it is a divisor for the distance resolution rho" wrapText="true" />
+                              <Slider fx:id="sliderHL2" showTickLabels="true" showTickMarks="true" />
+                              <Separator prefWidth="200.0" />
+                              <Label fx:id="labelSHL3" text="the multi-scale Hough transform, it is a divisor for the distance resolution theta" wrapText="true" />
+                              <Slider fx:id="sliderHL3" showTickLabels="true" showTickMarks="true" />
+                              <Separator prefWidth="200.0" />
+                              <HBox>
+                                 <children>
+                                    <CheckBox fx:id="chBHoughP" mnemonicParsing="false" text="Probabilistic Hough Line">
+                                       <padding>
+                                          <Insets top="10.0" />
+                                       </padding></CheckBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children></AnchorPane>
             </content>
           </TitledPane>
-          <TitledPane animated="false" text="Circle">
+          <TitledPane fx:id="houghCPane" animated="false" text="Circle">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <ScrollPane fitToHeight="true" fitToWidth="true">
+                     <content>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label minHeight="35.0" text="Minimum distance between detected centers" wrapText="true" />
+                              <Slider fx:id="sliderHC1" showTickLabels="true" showTickMarks="true" />
+                              <Separator prefWidth="200.0" />
+                              <Label minHeight="35.0" text=" Upper threshold for the internal Canny edge detector" wrapText="true" />
+                              <Slider fx:id="sliderHC12" showTickLabels="true" showTickMarks="true" />
+                              <Separator prefWidth="200.0" />
+                              <Label text="Threshold for center detection" />
+                              <Slider fx:id="sliderHC3" showTickLabels="true" showTickMarks="true" />
+                              <Separator prefWidth="200.0" />
+                              <Label text="Minimum radio to be detected" />
+                              <Slider fx:id="sliderHC4" showTickLabels="true" showTickMarks="true" />
+                              <Separator prefWidth="200.0" />
+                              <Label text="Maximum radius to be detected" />
+                              <Slider fx:id="sliderHC5" showTickLabels="true" showTickMarks="true" />
+                              <Separator prefWidth="200.0" />
+                              <HBox>
+                                 <children>
+                                    <CheckBox mnemonicParsing="false" text="CheckBox" />
+                                 </children>
+                              </HBox>
+                              <ImageView fx:id="detectCircleImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                           <padding>
+                              <Insets right="20.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
             </content>
           </TitledPane>
         </panes>

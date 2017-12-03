@@ -1,17 +1,20 @@
 package org.opencvapp.controller;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class MainController {
+public class MainController implements Initializable{
 
 	private static final Logger log = LoggerFactory.getLogger(MainController.class);
 
@@ -39,7 +42,7 @@ public class MainController {
 
 		stage.setTitle("OpenCV Application");
 		stage.setScene(scene);
-		stage.show();
+		stage.show();		
 	}
 
 	public void init() throws IOException {
@@ -86,6 +89,11 @@ public class MainController {
 	@FXML
 	public void openVideoView() {
 
+	}
+
+	public void initialize(URL location, ResourceBundle resources) {
+		// TODO Auto-generated method stub
+		openSeqImageView();
 	}
 
 }

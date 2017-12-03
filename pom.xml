@@ -34,6 +34,8 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- Remove for creating jar file -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -52,7 +54,9 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+			<!-- Remove for creating jar file -->
+
+
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.6</version>
@@ -73,9 +77,9 @@
 							</resources>
 						</configuration>
 					</execution>
-					</executions>					
+				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4.0</version>
@@ -126,6 +130,6 @@
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency>		
 	</dependencies>
 </project>
